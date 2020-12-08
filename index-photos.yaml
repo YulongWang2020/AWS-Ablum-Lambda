@@ -28,3 +28,26 @@ Resources:
           - subnet-c44bb4f5
   Bucket1:
     Type: 'AWS::S3::Bucket'
+
+  photosearchaws:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.8
+      CodeUri: .
+      Description: ''
+      MemorySize: 128
+      Timeout: 3
+      Role: >-
+        arn:aws:iam::043550019784:role/service-role/photo-search-aws-role-rpwshxpq
+      Events:
+        Api1:
+          Type: Api
+          Properties:
+            Path: /search
+            Method: GET
+      VpcConfig:
+        SecurityGroupIds:
+          - sg-cacb4cf4
+        SubnetIds:
+          - subnet-20943f46
