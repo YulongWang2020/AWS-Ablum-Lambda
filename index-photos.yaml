@@ -52,15 +52,15 @@ Resources:
         SubnetIds:
           - subnet-20943f46
 
-  # ApiGatewayRestApi:
-  # Type: AWS::ApiGateway::RestApi
-  # Properties:
-  #   ApiKeySourceType: HEADER
-  #   Description: An API Gateway with a Lambda Integration
-  #   EndpointConfiguration:
-  #     Types:
-  #       - REGIONAL
-  #   Name: searchapi
+  ApiGatewayRestApi:
+  Type: AWS::ApiGateway::RestApi
+  Properties:
+    ApiKeySourceType: HEADER
+    Description: An API Gateway with a Lambda Integration
+    EndpointConfiguration:
+      Types:
+        - REGIONAL
+    Name: searchapi
 
   # ApiGatewayMethod:
   #   Type: AWS::ApiGateway::Method
