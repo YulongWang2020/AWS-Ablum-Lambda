@@ -1,6 +1,13 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: An AWS Serverless Specification template describing your function.
+
+
+Parameters:
+apiName:
+  Description: search api for photo ablum
+  Type: String
+
 Resources:
   indexphotos:
     Type: 'AWS::Serverless::Function'
@@ -46,270 +53,402 @@ Resources:
         SubnetIds:
           - subnet-20943f46
 
-  ApiGatewayRestApi:
+  # Create a REST API
+  API:
     Type: AWS::ApiGateway::RestApi
     Properties:
-      Body: 
-        swagger: "2.0"
-        info:
-          description: "AI Photo Search application, built during the Cloud and Big Data course\
-            \ at Columbia University."
-          version: "1.0.0"
-          title: "AI Photo Search"
-        # host: "gdn19two0l.execute-api.us-east-1.amazonaws.com"
-        # basePath: "/test"
-        # schemes:
-        # - "https"
-        paths:
-          /search:
-            get:
-              operationId: "searchPhotos"
-              produces:
-              - "application/json"
-              parameters:
-              - name: "q"
-                in: "query"
-                required: false
-                type: "string"
-              responses:
-                '200':
-                  description: "200 response"
-                  schema:
-                    $ref: "#/definitions/SearchResponse"
-                  headers:
-                    Access-Control-Allow-Origin:
-                      type: "string"
-                '500':
-                  description: "500 response"
-                  schema:
-                    $ref: "#/definitions/Error"
-                '403':
-                  description: "403 response"
-                  schema:
-                    $ref: "#/definitions/Error"
-              x-amazon-apigateway-integration:
-                uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations'
-                responses:
-                  default:
-                    statusCode: "200"
-                passthroughBehavior: "when_no_match"
-                httpMethod: "POST"
-                contentHandling: "CONVERT_TO_TEXT"
-                type: "aws_proxy"
-            options:
-              consumes:
-              - "application/json"
-              produces:
-              - "application/json"
-              responses:
-                '200':
-                  description: "200 response"
-                  headers:
-                    Access-Control-Allow-Origin:
-                      type: "string"
-                    Access-Control-Allow-Methods:
-                      type: "string"
-                    Access-Control-Allow-Headers:
-                      type: "string"
-              x-amazon-apigateway-integration:
-                responses:
-                  default:
-                    statusCode: "200"
-                    responseParameters:
-                      method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
-                      method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-                      method.response.header.Access-Control-Allow-Origin: "'*'"
-                requestTemplates:
-                  application/json: "{\"statusCode\": 200}"
-                passthroughBehavior: "when_no_match"
-                type: "mock"
-          # /upload:
-          #   put:
-          #     operationId: "uploadPhoto"
-          #     produces:
-          #     - "application/json"
-          #     parameters:
-          #     - name: "Content-Type"
-          #       in: "header"
-          #       required: false
-          #       type: "string"
-          #     responses:
-          #       '200':
-          #         description: "200 response"
-          #         schema:
-          #           $ref: "#/definitions/MODEL703f66"
-          #       '500':
-          #         description: "500 response"
-          #         schema:
-          #           $ref: "#/definitions/Error"
-          #       '403':
-          #         description: "403 response"
-          #         schema:
-          #           $ref: "#/definitions/Error"
-          #     x-amazon-apigateway-integration:
-          #       credentials: "arn:aws:iam::043550019784:role/photoapi"
-          #       uri: "arn:aws:apigateway:us-east-1:s3:path/{bucket}"
-          #       responses:
-          #         default:
-          #           statusCode: "200"
-          #       requestParameters:
-          #         integration.request.header.Content-Type: "method.request.header.Content-Type"
-          #       passthroughBehavior: "when_no_match"
-          #       httpMethod: "PUT"
-          #       type: "aws"
-        definitions:
-          MODEL703f66:
-            type: "object"
-          Error:
-            type: "object"
-            properties:
-              code:
-                type: "integer"
-                format: "int32"
-              message:
-                type: "string"
-          Photo:
-            type: "object"
-            properties:
-              url:
-                type: "string"
-              labels:
-                type: "array"
-                items:
-                  type: "string"
-          SearchResponse:
-            type: "object"
-            properties:
-              results:
-                type: "array"
-                items:
-                  $ref: "#/definitions/Photo"
-      Name: searchapi
-
-  # ApiGatewayResource:
+      Name: !Ref apiName
+  
+  # Create a resource
+  Search:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref API
+      # For resources without a parent, 
+      # specify the RestApi root resource ID
+      ParentId: !GetAtt
+        - API
+        - RootResourceId
+      # create endpoint/search
+      PathPart: search
+      
+  # Create a resource
+  # Upload:
   #   Type: AWS::ApiGateway::Resource
   #   Properties:
-  #     ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
-  #     PathPart: 'search'
-  #     RestApiId: !Ref ApiGatewayRestApi
+  #     RestApiId: !Ref API
+  #     # For resources without a parent, 
+  #     # specify the RestApi root resource ID
+  #     ParentId: !GetAtt
+  #       - API
+  #       - RootResourceId
+  #     # Create endpoint/upload
+  #     PathPart: upload
+  
+  # Create a child resource
+  # Bucket:
+  #   Type: AWS::ApiGateway::Resource
+  #   Properties:
+  #     RestApiId: !Ref API
+  #     ParentId: !Ref Upload
+  #     # Create endpoint/upload/{s3-bucket-name}   // {} means a variable
+  #     PathPart: '{s3-bucket-name}'
 
+  # Create a grand child resource
+  # File:
+  #   Type: AWS::ApiGateway::Resource
+  #   Properties:
+  #     RestApiId: !Ref API
+  #     ParentId: !Ref Bucket 
+      
+  #     # Create endpoint/upload/{s3-bucket-name}/{file-name}   // {} means a variable
+  #     PathPart: '{file-name}'
 
-  # ApiGatewayMethod:
+  # Create a PUT method for upload.
+  # MethodUploadBucketFile:
   #   Type: AWS::ApiGateway::Method
   #   Properties:
-  #     ApiKeyRequired: false
+  #     RestApiId: !Ref API
+  #     ResourceId: !Ref File
+  #     HttpMethod: PUT
   #     AuthorizationType: NONE
-  #     HttpMethod: POST
+  #     # You would need to modifiy below
   #     Integration:
-  #       ConnectionType: INTERNET
-  #       IntegrationHttpMethod: POST
-  #       PassthroughBehavior: WHEN_NO_MATCH
-  #       TimeoutInMillis: 29000
-  #       Type: AWS_PROXY
-  #       Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations'
-  #     OperationName: 'lambda'
-  #     ResourceId: !GetAtt ApiGatewayRestApi.RootResourceId
-  #     RestApiId: !Ref ApiGatewayRestApi
-
-
-
-  # ApiGatewayGetMethod:
-  #   Type: AWS::ApiGateway::Method
-  #   Properties:
-  #     ApiKeyRequired: false
-  #     AuthorizationType: NONE
-  #     HttpMethod: GET
-  #     Integration:
-  #       IntegrationHttpMethod: GET
-  #       Type: AWS_PROXY
-  #       Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations'
-  #     ResourceId: !Ref ApiGatewayResource
-  #     RestApiId: !Ref ApiGatewayRestApi
-      # MethodResponses:
-      # - StatusCode: 200
-      #   ResponseModels:
-      #     application/json: 'Empty'
-      #   ResponseParameters:
-      #       method.response.header.Access-Control-Allow-Headers: false
-      #       method.response.header.Access-Control-Allow-Methods: false
-      #       method.response.header.Access-Control-Allow-Origin: false
-      # RequestParameters:
-      #   q: true
-
-
-  # ApiGatewayOptionsMethod:
-  #   Type: AWS::ApiGateway::Method
-  #   Properties:
-  #     AuthorizationType: NONE
-  #     RestApiId: 
-  #       Ref: ApiGatewayRestApi
-  #     ResourceId: 
-  #       Ref: ApiGatewayResource
-  #     HttpMethod: OPTIONS
-  #     Integration:
-  #       IntegrationResponses:
-  #       - StatusCode: 200
-  #         ResponseParameters:
-  #           method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-  #           method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
-  #           method.response.header.Access-Control-Allow-Origin: "'*'"
-  #         ResponseTemplates:
-  #           application/json: ''
-  #       PassthroughBehavior: WHEN_NO_MATCH
-  #       RequestTemplates:
-  #         application/json: '{"statusCode": 200}'
   #       Type: MOCK
-  #     MethodResponses:
-  #     - StatusCode: 200
-  #       ResponseModels:
-  #         application/json: 'Empty'
-  #       ResponseParameters:
-  #           method.response.header.Access-Control-Allow-Headers: false
-  #           method.response.header.Access-Control-Allow-Methods: false
-  #           method.response.header.Access-Control-Allow-Origin: false
 
-  # ApiGatewayModel:
-  #   Type: AWS::ApiGateway::Model
-  #   Properties:
-  #     ContentType: 'application/json'
-  #     RestApiId: !Ref ApiGatewayRestApi
-  #     Schema: {}
-
-  # ApiGatewayStage:
-  #   Type: AWS::ApiGateway::Stage
-  #   Properties:
-  #     DeploymentId: !Ref ApiGatewayDeployment
-  #     Description: Lambda API Stage v0
-  #     RestApiId: !Ref ApiGatewayRestApi
-  #     StageName: 'v0'
-
-  # ApiGatewayDeployment:
-  #   Type: AWS::ApiGateway::Deployment
-  #   DependsOn: ApiGatewayMethod
-  #   Properties:
-  #     Description: Lambda API Deployment
-  #     RestApiId: !Ref ApiGatewayRestApi
-
-  ApiGatewayIamRole:
-    Type: AWS::IAM::Role
+  # Create a GET method for search.
+  MethodSearch:
+    Type: AWS::ApiGateway::Method
     Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Sid: ''
-            Effect: 'Allow'
-            Principal:
-              Service:
-                - 'apigateway.amazonaws.com'
-            Action:
-              - 'sts:AssumeRole'
-      Path: '/'
-      Policies:
-        - PolicyName: LambdaAccess
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: 'Allow'
-                Action: 'lambda:*'
-                Resource: !GetAtt photosearchaws.Arn
+      RestApiId: !Ref API
+      ResourceId: !Ref Search
+      HttpMethod: GET
+      AuthorizationType: NONE
+      # You would need to modifiy below
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: GET
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations
+
+  Deployment:
+    # Useful if there are any dependencies. We can enforce order of executions
+    DependsOn: 
+      - MethodSearch
+      # - MethodUploadBucketFile
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId: !Ref API
+      Description: COMS-6998 Cloud Formation APIGateway Example by Hyun
+      StageName: v1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  # ApiGatewayRestApi:
+  #   Type: AWS::ApiGateway::RestApi
+  #   Properties:
+  #     Body: 
+  #       swagger: "2.0"
+  #       info:
+  #         description: "AI Photo Search application, built during the Cloud and Big Data course\
+  #           \ at Columbia University."
+  #         version: "1.0.0"
+  #         title: "AI Photo Search"
+  #       # host: "gdn19two0l.execute-api.us-east-1.amazonaws.com"
+  #       # basePath: "/test"
+  #       # schemes:
+  #       # - "https"
+  #       paths:
+  #         /search:
+  #           get:
+  #             operationId: "searchPhotos"
+  #             produces:
+  #             - "application/json"
+  #             parameters:
+  #             - name: "q"
+  #               in: "query"
+  #               required: false
+  #               type: "string"
+  #             responses:
+  #               '200':
+  #                 description: "200 response"
+  #                 schema:
+  #                   $ref: "#/definitions/SearchResponse"
+  #                 headers:
+  #                   Access-Control-Allow-Origin:
+  #                     type: "string"
+  #               '500':
+  #                 description: "500 response"
+  #                 schema:
+  #                   $ref: "#/definitions/Error"
+  #               '403':
+  #                 description: "403 response"
+  #                 schema:
+  #                   $ref: "#/definitions/Error"
+  #             x-amazon-apigateway-integration:
+  #               uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations'
+  #               responses:
+  #                 default:
+  #                   statusCode: "200"
+  #               passthroughBehavior: "when_no_match"
+  #               httpMethod: "POST"
+  #               contentHandling: "CONVERT_TO_TEXT"
+  #               type: "aws_proxy"
+  #           options:
+  #             consumes:
+  #             - "application/json"
+  #             produces:
+  #             - "application/json"
+  #             responses:
+  #               '200':
+  #                 description: "200 response"
+  #                 headers:
+  #                   Access-Control-Allow-Origin:
+  #                     type: "string"
+  #                   Access-Control-Allow-Methods:
+  #                     type: "string"
+  #                   Access-Control-Allow-Headers:
+  #                     type: "string"
+  #             x-amazon-apigateway-integration:
+  #               responses:
+  #                 default:
+  #                   statusCode: "200"
+  #                   responseParameters:
+  #                     method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+  #                     method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+  #                     method.response.header.Access-Control-Allow-Origin: "'*'"
+  #               requestTemplates:
+  #                 application/json: "{\"statusCode\": 200}"
+  #               passthroughBehavior: "when_no_match"
+  #               type: "mock"
+  #         # /upload:
+  #         #   put:
+  #         #     operationId: "uploadPhoto"
+  #         #     produces:
+  #         #     - "application/json"
+  #         #     parameters:
+  #         #     - name: "Content-Type"
+  #         #       in: "header"
+  #         #       required: false
+  #         #       type: "string"
+  #         #     responses:
+  #         #       '200':
+  #         #         description: "200 response"
+  #         #         schema:
+  #         #           $ref: "#/definitions/MODEL703f66"
+  #         #       '500':
+  #         #         description: "500 response"
+  #         #         schema:
+  #         #           $ref: "#/definitions/Error"
+  #         #       '403':
+  #         #         description: "403 response"
+  #         #         schema:
+  #         #           $ref: "#/definitions/Error"
+  #         #     x-amazon-apigateway-integration:
+  #         #       credentials: "arn:aws:iam::043550019784:role/photoapi"
+  #         #       uri: "arn:aws:apigateway:us-east-1:s3:path/{bucket}"
+  #         #       responses:
+  #         #         default:
+  #         #           statusCode: "200"
+  #         #       requestParameters:
+  #         #         integration.request.header.Content-Type: "method.request.header.Content-Type"
+  #         #       passthroughBehavior: "when_no_match"
+  #         #       httpMethod: "PUT"
+  #         #       type: "aws"
+  #       definitions:
+  #         MODEL703f66:
+  #           type: "object"
+  #         Error:
+  #           type: "object"
+  #           properties:
+  #             code:
+  #               type: "integer"
+  #               format: "int32"
+  #             message:
+  #               type: "string"
+  #         Photo:
+  #           type: "object"
+  #           properties:
+  #             url:
+  #               type: "string"
+  #             labels:
+  #               type: "array"
+  #               items:
+  #                 type: "string"
+  #         SearchResponse:
+  #           type: "object"
+  #           properties:
+  #             results:
+  #               type: "array"
+  #               items:
+  #                 $ref: "#/definitions/Photo"
+  #     Name: searchapi
+
+  # # ApiGatewayResource:
+  # #   Type: AWS::ApiGateway::Resource
+  # #   Properties:
+  # #     ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+  # #     PathPart: 'search'
+  # #     RestApiId: !Ref ApiGatewayRestApi
+
+
+  # # ApiGatewayMethod:
+  # #   Type: AWS::ApiGateway::Method
+  # #   Properties:
+  # #     ApiKeyRequired: false
+  # #     AuthorizationType: NONE
+  # #     HttpMethod: POST
+  # #     Integration:
+  # #       ConnectionType: INTERNET
+  # #       IntegrationHttpMethod: POST
+  # #       PassthroughBehavior: WHEN_NO_MATCH
+  # #       TimeoutInMillis: 29000
+  # #       Type: AWS_PROXY
+  # #       Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations'
+  # #     OperationName: 'lambda'
+  # #     ResourceId: !GetAtt ApiGatewayRestApi.RootResourceId
+  # #     RestApiId: !Ref ApiGatewayRestApi
+
+
+
+  # # ApiGatewayGetMethod:
+  # #   Type: AWS::ApiGateway::Method
+  # #   Properties:
+  # #     ApiKeyRequired: false
+  # #     AuthorizationType: NONE
+  # #     HttpMethod: GET
+  # #     Integration:
+  # #       IntegrationHttpMethod: GET
+  # #       Type: AWS_PROXY
+  # #       Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations'
+  # #     ResourceId: !Ref ApiGatewayResource
+  # #     RestApiId: !Ref ApiGatewayRestApi
+  #     # MethodResponses:
+  #     # - StatusCode: 200
+  #     #   ResponseModels:
+  #     #     application/json: 'Empty'
+  #     #   ResponseParameters:
+  #     #       method.response.header.Access-Control-Allow-Headers: false
+  #     #       method.response.header.Access-Control-Allow-Methods: false
+  #     #       method.response.header.Access-Control-Allow-Origin: false
+  #     # RequestParameters:
+  #     #   q: true
+
+
+  # # ApiGatewayOptionsMethod:
+  # #   Type: AWS::ApiGateway::Method
+  # #   Properties:
+  # #     AuthorizationType: NONE
+  # #     RestApiId: 
+  # #       Ref: ApiGatewayRestApi
+  # #     ResourceId: 
+  # #       Ref: ApiGatewayResource
+  # #     HttpMethod: OPTIONS
+  # #     Integration:
+  # #       IntegrationResponses:
+  # #       - StatusCode: 200
+  # #         ResponseParameters:
+  # #           method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+  # #           method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+  # #           method.response.header.Access-Control-Allow-Origin: "'*'"
+  # #         ResponseTemplates:
+  # #           application/json: ''
+  # #       PassthroughBehavior: WHEN_NO_MATCH
+  # #       RequestTemplates:
+  # #         application/json: '{"statusCode": 200}'
+  # #       Type: MOCK
+  # #     MethodResponses:
+  # #     - StatusCode: 200
+  # #       ResponseModels:
+  # #         application/json: 'Empty'
+  # #       ResponseParameters:
+  # #           method.response.header.Access-Control-Allow-Headers: false
+  # #           method.response.header.Access-Control-Allow-Methods: false
+  # #           method.response.header.Access-Control-Allow-Origin: false
+
+  # # ApiGatewayModel:
+  # #   Type: AWS::ApiGateway::Model
+  # #   Properties:
+  # #     ContentType: 'application/json'
+  # #     RestApiId: !Ref ApiGatewayRestApi
+  # #     Schema: {}
+
+  # # ApiGatewayStage:
+  # #   Type: AWS::ApiGateway::Stage
+  # #   Properties:
+  # #     DeploymentId: !Ref ApiGatewayDeployment
+  # #     Description: Lambda API Stage v0
+  # #     RestApiId: !Ref ApiGatewayRestApi
+  # #     StageName: 'v0'
+
+  # # ApiGatewayDeployment:
+  # #   Type: AWS::ApiGateway::Deployment
+  # #   DependsOn: ApiGatewayMethod
+  # #   Properties:
+  # #     Description: Lambda API Deployment
+  # #     RestApiId: !Ref ApiGatewayRestApi
+
+  # ApiGatewayIamRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     AssumeRolePolicyDocument:
+  #       Version: '2012-10-17'
+  #       Statement:
+  #         - Sid: ''
+  #           Effect: 'Allow'
+  #           Principal:
+  #             Service:
+  #               - 'apigateway.amazonaws.com'
+  #           Action:
+  #             - 'sts:AssumeRole'
+  #     Path: '/'
+  #     Policies:
+  #       - PolicyName: LambdaAccess
+  #         PolicyDocument:
+  #           Version: '2012-10-17'
+  #           Statement:
+  #             - Effect: 'Allow'
+  #               Action: 'lambda:*'
+  #               Resource: !GetAtt photosearchaws.Arn
 
