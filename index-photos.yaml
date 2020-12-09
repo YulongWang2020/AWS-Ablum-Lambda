@@ -3,11 +3,6 @@ Transform: 'AWS::Serverless-2016-10-31'
 Description: An AWS Serverless Specification template describing your function.
 
 
-Parameters:
-  apiName:
-    Description: search api for photo ablum
-    Type: String
-
 Resources:
   indexphotos:
     Type: 'AWS::Serverless::Function'
@@ -57,7 +52,7 @@ Resources:
   API:
     Type: AWS::ApiGateway::RestApi
     Properties:
-      Name: !Ref apiName
+      Name: ablumsearchapi
   
   # Create a resource
   Search:
