@@ -124,6 +124,8 @@ Resources:
         Type: AWS_PROXY
         IntegrationHttpMethod: GET
         Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations
+        RequestParameters:
+          integration.request.path.q: method.request.path.q
       MethodResponses:
         - ResponseModels:
             application/json: Empty
@@ -132,8 +134,7 @@ Resources:
             # method.response.header.Access-Control-Allow-Methods: false
             method.response.header.Access-Control-Allow-Origin: true
           StatusCode: '200'
-      # RequestParameters:
-      #   integration.request.path.q: method.request.path.q
+
 
   Deployment:
     # Useful if there are any dependencies. We can enforce order of executions
