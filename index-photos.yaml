@@ -72,18 +72,18 @@ Resources:
                 required: false
                 type: "string"
               responses:
-                200:
+                '200':
                   description: "200 response"
                   schema:
                     $ref: "#/definitions/SearchResponse"
                   headers:
                     Access-Control-Allow-Origin:
                       type: "string"
-                500:
+                '500':
                   description: "500 response"
                   schema:
                     $ref: "#/definitions/Error"
-                403:
+                '403':
                   description: "403 response"
                   schema:
                     $ref: "#/definitions/Error"
@@ -102,7 +102,7 @@ Resources:
               produces:
               - "application/json"
               responses:
-                200:
+                '200':
                   description: "200 response"
                   headers:
                     Access-Control-Allow-Origin:
@@ -134,15 +134,15 @@ Resources:
                 required: false
                 type: "string"
               responses:
-                200:
+                '200':
                   description: "200 response"
                   schema:
                     $ref: "#/definitions/MODEL703f66"
-                500:
+                '500':
                   description: "500 response"
                   schema:
                     $ref: "#/definitions/Error"
-                403:
+                '403':
                   description: "403 response"
                   schema:
                     $ref: "#/definitions/Error"
