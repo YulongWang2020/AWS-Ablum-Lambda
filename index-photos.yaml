@@ -64,28 +64,28 @@ Resources:
       RestApiId: !Ref ApiGatewayRestApi
 
 
-    # ApiGatewayGetMethod:
-    # Type: AWS::ApiGateway::Method
-    # Properties:
-    #   ApiKeyRequired: false
-    #   AuthorizationType: NONE
-    #   HttpMethod: GET
-    #   Integration:
-    #     IntegrationHttpMethod: GET
-    #     Type: AWS_PROXY
-    #     Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations'
-    #   ResourceId: !Ref ApiGatewayResource
-    #   RestApiId: !Ref ApiGatewayRestApi
-      # MethodResponses:
-      # - StatusCode: 200
-      #   ResponseModels:
-      #     application/json: 'Empty'
-      #   ResponseParameters:
-      #       method.response.header.Access-Control-Allow-Headers: false
-      #       method.response.header.Access-Control-Allow-Methods: false
-      #       method.response.header.Access-Control-Allow-Origin: false
-      # RequestParameters:
-      #   q : true
+  ApiGatewayGetMethod:
+  Type: AWS::ApiGateway::Method
+  Properties:
+    ApiKeyRequired: false
+    AuthorizationType: NONE
+    HttpMethod: GET
+    Integration:
+      IntegrationHttpMethod: GET
+      Type: AWS_PROXY
+      Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations'
+    ResourceId: !Ref ApiGatewayResource
+    RestApiId: !Ref ApiGatewayRestApi
+    MethodResponses:
+    - StatusCode: 200
+      ResponseModels:
+        application/json: 'Empty'
+      ResponseParameters:
+          method.response.header.Access-Control-Allow-Headers: false
+          method.response.header.Access-Control-Allow-Methods: false
+          method.response.header.Access-Control-Allow-Origin: false
+    RequestParameters:
+      q : true
 
 
   # ApiGatewayOptionsMethod:
@@ -136,7 +136,7 @@ Resources:
 
   ApiGatewayDeployment:
     Type: AWS::ApiGateway::Deployment
-    # DependsOn: ApiGatewayGetMethod
+    DependsOn: ApiGatewayGetMethod
     Properties:
       Description: Lambda API Deployment
       RestApiId: !Ref ApiGatewayRestApi
