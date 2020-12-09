@@ -85,13 +85,6 @@ Resources:
             method.response.header.Access-Control-Allow-Origin: true
           StatusCode: '200'
 
-  SearchResponseModel:
-    Type: AWS::ApiGateway::Model
-    Properties:
-      ContentType: 'application/json'
-      RestApiId: !Ref API
-      Schema: {}
-
   Deployment:
     DependsOn: 
       - MethodSearch
