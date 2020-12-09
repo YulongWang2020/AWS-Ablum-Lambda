@@ -125,7 +125,7 @@ Resources:
         IntegrationHttpMethod: GET
         Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations
       MethodResponses:
-        - StatusCode: 200
+        StatusCode: '200'
         ResponseModels:
           application/json: 'Empty'
         ResponseParameters:
