@@ -56,12 +56,12 @@ Resources:
           - REGIONAL
       Name: searchapi
 
-  ApiGatewayResource:
-    Type: AWS::ApiGateway::Resource
-    Properties:
-      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
-      PathPart: 'search'
-      RestApiId: !Ref ApiGatewayRestApi
+  # ApiGatewayResource:
+  #   Type: AWS::ApiGateway::Resource
+  #   Properties:
+  #     ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+  #     PathPart: 'search'
+  #     RestApiId: !Ref ApiGatewayRestApi
 
 
   ApiGatewayMethod:
@@ -78,7 +78,7 @@ Resources:
         Type: AWS_PROXY
         Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations'
       OperationName: 'lambda'
-      ResourceId: !Ref ApiGatewayResource
+      ResourceId: !GetAtt apiGateway.RootResourceId
       RestApiId: !Ref ApiGatewayRestApi
 
 
