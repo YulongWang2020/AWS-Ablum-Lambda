@@ -74,8 +74,10 @@ Resources:
         IntegrationHttpMethod: GET
         Type: AWS_PROXY
         Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations'
-      ResourceId: !Ref ApiGatewayResource
-      RestApiId: !Ref ApiGatewayRestApi
+      RestApiId:
+        Ref: ApiGatewayRestApi
+      ResourceId:
+        Ref: ApiGatewayResource
       MethodResponses:
       - StatusCode: 200
         ResponseModels:
@@ -93,8 +95,10 @@ Resources:
     Type: AWS::ApiGateway::Method
     Properties:
       AuthorizationType: NONE
-      RestApiId: !Ref ApiGatewayRestApi
-      ResourceId: !Ref ApiGatewayResource
+      RestApiId:
+        Ref: ApiGatewayRestApi
+      ResourceId:
+        Ref: ApiGatewayResource
       HttpMethod: OPTIONS
       Integration:
         IntegrationResponses:
