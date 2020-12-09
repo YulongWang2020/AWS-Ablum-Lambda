@@ -64,18 +64,18 @@ Resources:
       RestApiId: !Ref ApiGatewayRestApi
 
 
-    ApiGatewayGetMethod:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      ApiKeyRequired: false
-      AuthorizationType: NONE
-      HttpMethod: GET
-      Integration:
-        IntegrationHttpMethod: GET
-        Type: AWS_PROXY
-        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations'
-      ResourceId: !Ref ApiGatewayResource
-      RestApiId: !Ref ApiGatewayRestApi
+    # ApiGatewayGetMethod:
+    # Type: AWS::ApiGateway::Method
+    # Properties:
+    #   ApiKeyRequired: false
+    #   AuthorizationType: NONE
+    #   HttpMethod: GET
+    #   Integration:
+    #     IntegrationHttpMethod: GET
+    #     Type: AWS_PROXY
+    #     Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations'
+    #   ResourceId: !Ref ApiGatewayResource
+    #   RestApiId: !Ref ApiGatewayRestApi
       # MethodResponses:
       # - StatusCode: 200
       #   ResponseModels:
