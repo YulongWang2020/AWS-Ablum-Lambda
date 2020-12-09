@@ -125,13 +125,13 @@ Resources:
         IntegrationHttpMethod: GET
         Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations
       MethodResponses:
-        StatusCode: '200'
-        ResponseModels:
-          application/json: 'Empty'
-        ResponseParameters:
-          method.response.header.Access-Control-Allow-Headers: false
-          method.response.header.Access-Control-Allow-Methods: false
-          method.response.header.Access-Control-Allow-Origin: false
+        - ResponseModels:
+            application/json: Empty
+          ResponseParameters:
+            # method.response.header.Access-Control-Allow-Headers: false
+            # method.response.header.Access-Control-Allow-Methods: false
+            method.response.header.Access-Control-Allow-Origin: true
+          StatusCode: '200'
       RequestParameters:
         q: true
 
