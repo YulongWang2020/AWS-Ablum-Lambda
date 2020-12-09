@@ -134,12 +134,12 @@ Resources:
       RestApiId: !Ref ApiGatewayRestApi
       StageName: 'v0'
 
-  ApiGatewayDeployment:
-    Type: AWS::ApiGateway::Deployment
-    DependsOn: ApiGatewayGetMethod
-    Properties:
-      Description: Lambda API Deployment
-      RestApiId: !Ref ApiGatewayRestApi
+  # ApiGatewayDeployment:
+  #   Type: AWS::ApiGateway::Deployment
+  #   DependsOn: ApiGatewayGetMethod
+  #   Properties:
+  #     Description: Lambda API Deployment
+  #     RestApiId: !Ref ApiGatewayRestApi
 
   ApiGatewayIamRole:
     Type: AWS::IAM::Role
