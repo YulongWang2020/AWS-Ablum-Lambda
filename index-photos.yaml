@@ -63,13 +63,6 @@ Resources:
       PathPart: 'search'
       RestApiId: !Ref ApiGatewayRestApi
 
-  ApiGatewayModel:
-    Type: AWS::ApiGateway::Model
-    Properties:
-      ContentType: 'application/json'
-      RestApiId: !Ref ApiGatewayRestApi
-      Schema: {}
-
 
     ApiGatewayGetMethod:
     Type: AWS::ApiGateway::Method
@@ -124,7 +117,13 @@ Resources:
             method.response.header.Access-Control-Allow-Methods: false
             method.response.header.Access-Control-Allow-Origin: false
 
-
+  ApiGatewayModel:
+    Type: AWS::ApiGateway::Model
+    Properties:
+      ContentType: 'application/json'
+      RestApiId: !Ref ApiGatewayRestApi
+      Schema: {}
+      
   ApiGatewayStage:
     Type: AWS::ApiGateway::Stage
     Properties:
