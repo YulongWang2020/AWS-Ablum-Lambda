@@ -133,7 +133,7 @@ Resources:
             method.response.header.Access-Control-Allow-Origin: true
           StatusCode: '200'
       RequestParameters:
-        q: true
+        integration.request.path.q: method.request.path.q
 
   Deployment:
     # Useful if there are any dependencies. We can enforce order of executions
