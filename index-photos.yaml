@@ -40,12 +40,6 @@ Resources:
       Timeout: 3
       Role: >-
         arn:aws:iam::043550019784:role/service-role/photo-search-aws-role-rpwshxpq
-      Events:
-        Api1:
-          Type: Api
-          Properties:
-            Path: /search
-            Method: GET
       VpcConfig:
         SecurityGroupIds:
           - sg-cacb4cf4
@@ -67,9 +61,9 @@ Resources:
     Properties:
       ApiKeyRequired: false
       AuthorizationType: NONE
-      HttpMethod: POST
+      HttpMethod: GET
       Integration:
-        IntegrationHttpMethod: POST
+        IntegrationHttpMethod: GET
         Type: AWS_PROXY
         Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations'
       ResourceId: !GetAtt ApiGatewayRestApi.RootResourceId
