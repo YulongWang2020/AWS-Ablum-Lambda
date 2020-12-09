@@ -63,8 +63,15 @@ Resources:
       PathPart: 'search'
       RestApiId: !Ref ApiGatewayRestApi
 
+  ApiGatewayModel:
+    Type: AWS::ApiGateway::Model
+    Properties:
+      ContentType: 'application/json'
+      RestApiId: !Ref ApiGatewayRestApi
+      Schema: {}
 
-  ApiGatewayGetMethod:
+
+    ApiGatewayGetMethod:
     Type: AWS::ApiGateway::Method
     Properties:
       ApiKeyRequired: false
@@ -74,10 +81,8 @@ Resources:
         IntegrationHttpMethod: GET
         Type: AWS_PROXY
         Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations'
-      RestApiId:
-        Ref: ApiGatewayRestApi
-      ResourceId:
-        Ref: ApiGatewayResource
+      RestApiId: !Ref ApiGatewayRestApi
+      ResourceId: !Ref ApiGatewayResource
       MethodResponses:
       - StatusCode: 200
         ResponseModels:
@@ -90,15 +95,12 @@ Resources:
         q : true
 
 
-
   ApiGatewayOptionsMethod:
     Type: AWS::ApiGateway::Method
     Properties:
       AuthorizationType: NONE
-      RestApiId:
-        Ref: ApiGatewayRestApi
-      ResourceId:
-        Ref: ApiGatewayResource
+      RestApiId: !Ref ApiGatewayRestApi
+      ResourceId: !Ref ApiGatewayResource
       HttpMethod: OPTIONS
       Integration:
         IntegrationResponses:
@@ -122,12 +124,6 @@ Resources:
             method.response.header.Access-Control-Allow-Methods: false
             method.response.header.Access-Control-Allow-Origin: false
 
-  ApiGatewayModel:
-    Type: AWS::ApiGateway::Model
-    Properties:
-      ContentType: 'application/json'
-      RestApiId: !Ref ApiGatewayRestApi
-      Schema: {}
 
   ApiGatewayStage:
     Type: AWS::ApiGateway::Stage
@@ -139,7 +135,7 @@ Resources:
 
   ApiGatewayDeployment:
     Type: AWS::ApiGateway::Deployment
-    DependsOn: ApiGatewayOptionsMethod
+    DependsOn: ApiGatewayGetMethod
     Properties:
       Description: Lambda API Deployment
       RestApiId: !Ref ApiGatewayRestApi
