@@ -94,9 +94,9 @@ Resources:
     Properties:
       AuthorizationType: NONE
       RestApiId:
-        Ref: !Ref ApiGatewayRestApi
+        Ref: ApiGatewayRestApi
       ResourceId:
-        Ref: !Ref ApiGatewayResource
+        Ref: ApiGatewayResource
       HttpMethod: OPTIONS
       Integration:
         IntegrationResponses:
