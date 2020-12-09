@@ -65,21 +65,21 @@ Resources:
 
 
   ApiGatewayMethod:
-  Type: AWS::ApiGateway::Method
-  Properties:
-    ApiKeyRequired: false
-    AuthorizationType: NONE
-    HttpMethod: POST
-    Integration:
-      ConnectionType: INTERNET
-      IntegrationHttpMethod: POST
-      PassthroughBehavior: WHEN_NO_MATCH
-      TimeoutInMillis: 29000
-      Type: AWS_PROXY
-      Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations'
-    OperationName: 'lambda'
-    ResourceId: !Ref ApiGatewayResource
-    RestApiId: !Ref ApiGatewayRestApi
+    Type: AWS::ApiGateway::Method
+    Properties:
+      ApiKeyRequired: false
+      AuthorizationType: NONE
+      HttpMethod: POST
+      Integration:
+        ConnectionType: INTERNET
+        IntegrationHttpMethod: POST
+        PassthroughBehavior: WHEN_NO_MATCH
+        TimeoutInMillis: 29000
+        Type: AWS_PROXY
+        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations'
+      OperationName: 'lambda'
+      ResourceId: !Ref ApiGatewayResource
+      RestApiId: !Ref ApiGatewayRestApi
 
 
 
