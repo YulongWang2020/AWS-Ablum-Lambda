@@ -68,7 +68,7 @@ Resources:
     Properties:
       RestApiId: !Ref API
       ResourceId: !Ref Search
-      HttpMethod: POST
+      HttpMethod: GET
       AuthorizationType: NONE
       RequestParameters:
         method.request.querystring.q: false
@@ -82,11 +82,13 @@ Resources:
           ResponseParameters:
             method.response.header.Access-Control-Allow-Origin: true
           StatusCode: '200'
+
+          
   ConfigLambdaPermission:
     Type: "AWS::Lambda::Permission"
     DependsOn:
-    - API
-    - photosearchaws
+      - API
+      - photosearchaws
     Properties:
       Action: lambda:InvokeFunction
       FunctionName: !Ref photosearchaws
