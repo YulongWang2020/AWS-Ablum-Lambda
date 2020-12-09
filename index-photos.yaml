@@ -74,20 +74,18 @@ Resources:
         IntegrationHttpMethod: GET
         Type: AWS_PROXY
         Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations'
-      RestApiId: 
-        Ref: ApiGatewayRestApi
-      ResourceId: 
-        Ref: ApiGatewayResource
-      MethodResponses:
-      - StatusCode: 200
-        ResponseModels:
-          application/json: 'Empty'
-        ResponseParameters:
-            method.response.header.Access-Control-Allow-Headers: false
-            method.response.header.Access-Control-Allow-Methods: false
-            method.response.header.Access-Control-Allow-Origin: false
-      RequestParameters:
-        q : true
+      ResourceId: !Ref ApiGatewayResource
+      RestApiId: !Ref ApiGatewayRestApi
+      # MethodResponses:
+      # - StatusCode: 200
+      #   ResponseModels:
+      #     application/json: 'Empty'
+      #   ResponseParameters:
+      #       method.response.header.Access-Control-Allow-Headers: false
+      #       method.response.header.Access-Control-Allow-Methods: false
+      #       method.response.header.Access-Control-Allow-Origin: false
+      # RequestParameters:
+      #   q : true
 
 
   # ApiGatewayOptionsMethod:
