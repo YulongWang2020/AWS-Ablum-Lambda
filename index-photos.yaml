@@ -53,70 +53,70 @@ Resources:
           - subnet-20943f46
 
   ApiGatewayRestApi:
-  Type: AWS::ApiGateway::RestApi
-  Properties:
-    ApiKeySourceType: HEADER
-    Description: An API Gateway with a Lambda Integration
-    EndpointConfiguration:
-      Types:
-        - REGIONAL
-    Name: searchapi
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      ApiKeySourceType: HEADER
+      Description: An API Gateway with a Lambda Integration
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      Name: searchapi
 
-  # ApiGatewayMethod:
-  #   Type: AWS::ApiGateway::Method
-  #   Properties:
-  #     ApiKeyRequired: false
-  #     AuthorizationType: NONE
-  #     HttpMethod: POST
-  #     Integration:
-  #       IntegrationHttpMethod: POST
-  #       Type: AWS_PROXY
-  #       Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunction.Arn}/invocations'
-  #     ResourceId: !Ref ApiGatewayResource
-  #     RestApiId: !Ref ApiGatewayRestApi
+  ApiGatewayMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      ApiKeyRequired: false
+      AuthorizationType: NONE
+      HttpMethod: POST
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunction.Arn}/invocations'
+      ResourceId: !Ref ApiGatewayResource
+      RestApiId: !Ref ApiGatewayRestApi
 
-  # ApiGatewayModel:
-  #   Type: AWS::ApiGateway::Model
-  #   Properties:
-  #     ContentType: 'application/json'
-  #     RestApiId: !Ref ApiGatewayRestApi
-  #     Schema: {}
+  ApiGatewayModel:
+    Type: AWS::ApiGateway::Model
+    Properties:
+      ContentType: 'application/json'
+      RestApiId: !Ref ApiGatewayRestApi
+      Schema: {}
 
-  # ApiGatewayStage:
-  #   Type: AWS::ApiGateway::Stage
-  #   Properties:
-  #     DeploymentId: !Ref ApiGatewayDeployment
-  #     Description: Lambda API Stage v0
-  #     RestApiId: !Ref ApiGatewayRestApi
-  #     StageName: 'v0'
+  ApiGatewayStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      DeploymentId: !Ref ApiGatewayDeployment
+      Description: Lambda API Stage v0
+      RestApiId: !Ref ApiGatewayRestApi
+      StageName: 'v0'
 
-  # ApiGatewayDeployment:
-  #   Type: AWS::ApiGateway::Deployment
-  #   DependsOn: ApiGatewayMethod
-  #   Properties:
-  #     Description: Lambda API Deployment
-  #     RestApiId: !Ref ApiGatewayRestApi
+  ApiGatewayDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: ApiGatewayMethod
+    Properties:
+      Description: Lambda API Deployment
+      RestApiId: !Ref ApiGatewayRestApi
 
-  # ApiGatewayIamRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #         - Sid: ''
-  #           Effect: 'Allow'
-  #           Principal:
-  #             Service:
-  #               - 'apigateway.amazonaws.com'
-  #           Action:
-  #             - 'sts:AssumeRole'
-  #     Path: '/'
-  #     Policies:
-  #       - PolicyName: LambdaAccess
-  #         PolicyDocument:
-  #           Version: '2012-10-17'
-  #           Statement:
-  #             - Effect: 'Allow'
-  #               Action: 'lambda:*'
-  #               Resource: !GetAtt LambdaFunction.Arn
+  ApiGatewayIamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: ''
+            Effect: 'Allow'
+            Principal:
+              Service:
+                - 'apigateway.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      Path: '/'
+      Policies:
+        - PolicyName: LambdaAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action: 'lambda:*'
+                Resource: !GetAtt LambdaFunction.Arn
 
