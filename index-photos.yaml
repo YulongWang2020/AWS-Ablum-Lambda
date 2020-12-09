@@ -56,10 +56,10 @@ Resources:
             \ at Columbia University."
           version: "1.0.0"
           title: "AI Photo Search"
-        host: "gdn19two0l.execute-api.us-east-1.amazonaws.com"
-        basePath: "/test"
-        schemes:
-        - "https"
+        # host: "gdn19two0l.execute-api.us-east-1.amazonaws.com"
+        # basePath: "/test"
+        # schemes:
+        # - "https"
         paths:
           /search:
             get:
@@ -123,40 +123,40 @@ Resources:
                   application/json: "{\"statusCode\": 200}"
                 passthroughBehavior: "when_no_match"
                 type: "mock"
-          /upload:
-            put:
-              operationId: "uploadPhoto"
-              produces:
-              - "application/json"
-              parameters:
-              - name: "Content-Type"
-                in: "header"
-                required: false
-                type: "string"
-              responses:
-                '200':
-                  description: "200 response"
-                  schema:
-                    $ref: "#/definitions/MODEL703f66"
-                '500':
-                  description: "500 response"
-                  schema:
-                    $ref: "#/definitions/Error"
-                '403':
-                  description: "403 response"
-                  schema:
-                    $ref: "#/definitions/Error"
-              x-amazon-apigateway-integration:
-                credentials: "arn:aws:iam::043550019784:role/photoapi"
-                uri: "arn:aws:apigateway:us-east-1:s3:path/{bucket}"
-                responses:
-                  default:
-                    statusCode: "200"
-                requestParameters:
-                  integration.request.header.Content-Type: "method.request.header.Content-Type"
-                passthroughBehavior: "when_no_match"
-                httpMethod: "PUT"
-                type: "aws"
+          # /upload:
+          #   put:
+          #     operationId: "uploadPhoto"
+          #     produces:
+          #     - "application/json"
+          #     parameters:
+          #     - name: "Content-Type"
+          #       in: "header"
+          #       required: false
+          #       type: "string"
+          #     responses:
+          #       '200':
+          #         description: "200 response"
+          #         schema:
+          #           $ref: "#/definitions/MODEL703f66"
+          #       '500':
+          #         description: "500 response"
+          #         schema:
+          #           $ref: "#/definitions/Error"
+          #       '403':
+          #         description: "403 response"
+          #         schema:
+          #           $ref: "#/definitions/Error"
+          #     x-amazon-apigateway-integration:
+          #       credentials: "arn:aws:iam::043550019784:role/photoapi"
+          #       uri: "arn:aws:apigateway:us-east-1:s3:path/{bucket}"
+          #       responses:
+          #         default:
+          #           statusCode: "200"
+          #       requestParameters:
+          #         integration.request.header.Content-Type: "method.request.header.Content-Type"
+          #       passthroughBehavior: "when_no_match"
+          #       httpMethod: "PUT"
+          #       type: "aws"
         definitions:
           MODEL703f66:
             type: "object"
