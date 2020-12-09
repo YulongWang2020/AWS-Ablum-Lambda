@@ -120,14 +120,14 @@ Resources:
       HttpMethod: GET
       AuthorizationType: NONE
       # You would need to modifiy below
+
+      RequestParameters:
+        method.request.querystring.q: false
+
       Integration:
         Type: AWS_PROXY
         IntegrationHttpMethod: GET
         Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations
-        RequestParameters:
-          integration.request.path.q: method.request.path.q
-        CacheKeyParameters:
-          - method.request.path.q
       MethodResponses:
         - ResponseModels:
             application/json: Empty
