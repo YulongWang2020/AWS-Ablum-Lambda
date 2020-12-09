@@ -56,6 +56,14 @@ Resources:
           - REGIONAL
       Name: searchapi
 
+  ApiGatewayResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+      PathPart: 'search'
+      RestApiId: !Ref ApiGatewayRestApi
+
+
   ApiGatewayMethod:
     Type: AWS::ApiGateway::Method
     Properties:
