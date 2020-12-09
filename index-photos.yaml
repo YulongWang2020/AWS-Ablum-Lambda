@@ -118,5 +118,5 @@ Resources:
             Statement:
               - Effect: 'Allow'
                 Action: 'lambda:*'
-                Resource: !GetAtt LambdaFunction.Arn
+                Resource: !GetAtt photosearchaws.Arn
 
