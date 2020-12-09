@@ -48,70 +48,21 @@ Resources:
         SubnetIds:
           - subnet-20943f46
 
-  # Create a REST API
   API:
     Type: AWS::ApiGateway::RestApi
     Properties:
       Name: ablumsearchapi
-  
-  # Create a resource
+
   Search:
     Type: AWS::ApiGateway::Resource
     Properties:
       RestApiId: !Ref API
-      # For resources without a parent, 
-      # specify the RestApi root resource ID
+
       ParentId: !GetAtt
         - API
         - RootResourceId
-      # create endpoint/search
       PathPart: search
       
-  # Create a resource
-  # Upload:
-  #   Type: AWS::ApiGateway::Resource
-  #   Properties:
-  #     RestApiId: !Ref API
-  #     # For resources without a parent, 
-  #     # specify the RestApi root resource ID
-  #     ParentId: !GetAtt
-  #       - API
-  #       - RootResourceId
-  #     # Create endpoint/upload
-  #     PathPart: upload
-  
-  # Create a child resource
-  # Bucket:
-  #   Type: AWS::ApiGateway::Resource
-  #   Properties:
-  #     RestApiId: !Ref API
-  #     ParentId: !Ref Upload
-  #     # Create endpoint/upload/{s3-bucket-name}   // {} means a variable
-  #     PathPart: '{s3-bucket-name}'
-
-  # Create a grand child resource
-  # File:
-  #   Type: AWS::ApiGateway::Resource
-  #   Properties:
-  #     RestApiId: !Ref API
-  #     ParentId: !Ref Bucket 
-      
-  #     # Create endpoint/upload/{s3-bucket-name}/{file-name}   // {} means a variable
-  #     PathPart: '{file-name}'
-
-  # Create a PUT method for upload.
-  # MethodUploadBucketFile:
-  #   Type: AWS::ApiGateway::Method
-  #   Properties:
-  #     RestApiId: !Ref API
-  #     ResourceId: !Ref File
-  #     HttpMethod: PUT
-  #     AuthorizationType: NONE
-  #     # You would need to modifiy below
-  #     Integration:
-  #       Type: MOCK
-
-  # Create a GET method for search.
   MethodSearch:
     Type: AWS::ApiGateway::Method
     Properties:
@@ -119,30 +70,31 @@ Resources:
       ResourceId: !Ref Search
       HttpMethod: GET
       AuthorizationType: NONE
-      # You would need to modifiy below
-
       RequestParameters:
         method.request.querystring.q: false
-
       Integration:
         Type: AWS_PROXY
         IntegrationHttpMethod: GET
         Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations
       MethodResponses:
         - ResponseModels:
-            application/json: Empty
+            application/json: SearchResponse
           ResponseParameters:
             # method.response.header.Access-Control-Allow-Headers: false
             # method.response.header.Access-Control-Allow-Methods: false
             method.response.header.Access-Control-Allow-Origin: true
           StatusCode: '200'
 
+  SearchResponseModel:
+    Type: AWS::ApiGateway::Model
+    Properties:
+      ContentType: 'application/json'
+      RestApiId: !Ref API
+      Schema: {}
 
   Deployment:
-    # Useful if there are any dependencies. We can enforce order of executions
     DependsOn: 
       - MethodSearch
-      # - MethodUploadBucketFile
     Type: AWS::ApiGateway::Deployment
     Properties:
       RestApiId: !Ref API
