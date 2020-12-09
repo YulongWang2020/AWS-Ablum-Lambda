@@ -62,13 +62,6 @@ Resources:
         - REGIONAL
     Name: searchapi
 
-  ApiGatewayResource:
-  Type: AWS::ApiGateway::Resource
-  Properties:
-    ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
-    PathPart: 'lambda'
-    RestApiId: !Ref ApiGatewayRestApi
-
   ApiGatewayMethod:
     Type: AWS::ApiGateway::Method
     Properties:
@@ -76,14 +69,9 @@ Resources:
       AuthorizationType: NONE
       HttpMethod: POST
       Integration:
-        ConnectionType: INTERNET
-        Credentials: !GetAtt ApiGatewayIamRole.Arn
         IntegrationHttpMethod: POST
-        PassthroughBehavior: WHEN_NO_MATCH
-        TimeoutInMillis: 29000
         Type: AWS_PROXY
         Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunction.Arn}/invocations'
-      OperationName: 'lambda'
       ResourceId: !Ref ApiGatewayResource
       RestApiId: !Ref ApiGatewayRestApi
 
