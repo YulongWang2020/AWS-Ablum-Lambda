@@ -9,9 +9,7 @@ Resources:
     Properties:
       Handler: lambda_function.lambda_handler
       Runtime: python3.8
-      Code: 
-        S3Bucket: "aws-ablum-s3-web"
-        S3Key: "index-photos-3c15250a-e825-427e-92bc-c7e2f4294630.zip"
+      CodeUri: ./index-photos-3c15250a-e825-427e-92bc-c7e2f4294630.zip
       Description: ''
       MemorySize: 128
       Timeout: 30
@@ -38,9 +36,7 @@ Resources:
     Properties:
       Handler: lambda_function.lambda_handler
       Runtime: python3.8
-      Code: 
-        S3Bucket: "aws-ablum-s3-web"
-        S3Key: "photo-search-aws-64ae9d40-4a30-44d4-a3b5-f641778a1856.zip"
+      CodeUri: ./photo-search-aws-64ae9d40-4a30-44d4-a3b5-f641778a1856.zip
       Description: ''
       MemorySize: 128
       Timeout: 3
