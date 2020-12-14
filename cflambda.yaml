@@ -42,7 +42,7 @@ Resources:
               - "*"
             ExposedHeaders: 
               - "ETag"
-
+              
   Bucket1Policy:
     Type: AWS::S3::BucketPolicy
     Properties: 
@@ -56,7 +56,11 @@ Resources:
             - "s3:GetObject"
             - "s3:ListBucket"
             - "s3:PutObject"
-          Resource: "*"
+          Resource: !Join 
+            - ''
+            - - 'arn:aws:s3:::'
+              - !Ref Bucket1
+              - /*
           Principal: "*"
 
 
