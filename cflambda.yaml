@@ -46,8 +46,6 @@ Resources:
   Bucket1Policy:
     Type: AWS::S3::BucketPolicy
     Properties: 
-      Bucket: 
-        Ref: Bucket1
       PolicyDocument: 
        Statement:
         - Effect: "Allow"
