@@ -63,7 +63,7 @@ Resources:
                 - /*
             Principal: "*"
 
-        Bucket: !Ref Bucket1
+      Bucket: !Ref Bucket1
 
 
 
