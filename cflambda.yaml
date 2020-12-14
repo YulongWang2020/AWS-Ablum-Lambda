@@ -47,7 +47,9 @@ Resources:
     Type: AWS::S3::BucketPolicy
     Properties: 
       PolicyDocument: 
-       Statement:
+      Id: AblumPhotoS3Policy
+      Version: 2012-10-17
+      Statement:
         - Effect: "Allow"
           Action:
             - "s3:DeleteObject"
