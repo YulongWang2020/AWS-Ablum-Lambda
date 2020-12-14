@@ -27,6 +27,7 @@ Resources:
     Type: 'AWS::S3::Bucket'
     Properties:
       BucketName: cf-stack-ablum-photo
+      AccessControl: PublicReadWrite
       CorsConfiguration: 
         CorsRules: 
           - AllowedHeaders: 
@@ -45,18 +46,15 @@ Resources:
     Type: AWS::S3::BucketPolicy
     Properties: 
       Bucket: cf-stack-ablum-photo
-      PolicyDocument: {
-          "Version": "2012-10-17",
-          "Statement": [
-              {
-                  "Sid": "PublicReadGetObject",
-                  "Effect": "Allow",
-                  "Principal": "*",
-                  "Action": "s3:GetObject",
-                  "Resource": "arn:aws:s3:::photo-album-aws/*"
-              }
-          ]
-      }
+      PolicyDocument: 
+       Statement:
+        - Effect: "Allow"
+          Action:
+            - "s3:DeleteObject"
+            - "s3:GetObject"
+            - "s3:ListBucket"
+            - "s3:PutObject"
+          Resource: "arn:aws:s3:::cf-stack-ablum-photo/*"
 
 
 
