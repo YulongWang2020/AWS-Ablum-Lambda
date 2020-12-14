@@ -63,6 +63,8 @@ Resources:
               - /*
           Principal: "*"
 
+      Bucket: !Ref Bucket1
+
 
 
   CFphotosearchaws:
