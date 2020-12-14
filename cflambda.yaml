@@ -27,6 +27,20 @@ Resources:
     Type: 'AWS::S3::Bucket'
     Properties:
       BucketName: cf-stack-ablum-photo
+      CorsConfiguration: 
+        CorsRules: 
+          - AllowedHeaders: 
+              - "*"
+            AllowedMethods: 
+              - "GET"
+              - "PUT"
+              - "POST"
+              - "HEAD"
+              - "DELETE"
+            AllowedOrigins: 
+              - "*"
+            ExposedHeaders: 
+              - "ETag"
 
   CFphotosearchaws:
     Type: 'AWS::Serverless::Function'
