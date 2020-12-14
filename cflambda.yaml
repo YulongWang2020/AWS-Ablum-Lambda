@@ -137,7 +137,7 @@ Resources:
               - 'sts:AssumeRole'
       Path: '/'
       Policies:
-        - PolicyNmae: 'AmazonLexFullAccess'
+        - PolicyName: 'AmazonLexFullAccess'
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
