@@ -45,7 +45,8 @@ Resources:
   Bucket1Policy:
     Type: AWS::S3::BucketPolicy
     Properties: 
-      Bucket: cf-stack-ablum-photo
+      Bucket: 
+        Ref: Bucket1
       PolicyDocument: 
        Statement:
         - Effect: "Allow"
