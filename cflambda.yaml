@@ -35,7 +35,6 @@ Resources:
           - Principal: "*"
           - Action: "s3:GetObject"
           - Resource: "arn:aws:s3:::cf-stack-ablum-photo/*"
-
       CorsConfiguration: 
         CorsRules: 
           - AllowedHeaders: 
@@ -50,7 +49,25 @@ Resources:
               - "*"
             ExposedHeaders: 
               - "ETag"
+  Bucket1Policy:
+    Type: AWS::S3::BucketPolicy
+    Properties: 
+      Bucket: cf-stack-ablum-photo
+      PolicyDocument: {
+          "Version": "2012-10-17",
+          "Statement": [
+              {
+                  "Sid": "PublicReadGetObject",
+                  "Effect": "Allow",
+                  "Principal": "*",
+                  "Action": "s3:GetObject",
+                  "Resource": "arn:aws:s3:::photo-album-aws/*"
+              }
+          ]
+      }
 
+
+      
   CFphotosearchaws:
     Type: 'AWS::Serverless::Function'
     Properties:
