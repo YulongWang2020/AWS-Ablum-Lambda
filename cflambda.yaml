@@ -55,7 +55,7 @@ Resources:
             - "s3:GetObject"
             - "s3:ListBucket"
             - "s3:PutObject"
-          Resource: "arn:aws:s3:::cf-stack-ablum-photo/*"
+          Resource: "arn:aws:s3::cf-stack-ablum-photo/*"
           Principal: "*"
 
 
