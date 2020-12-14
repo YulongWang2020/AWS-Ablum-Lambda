@@ -2,7 +2,7 @@ version: 0.1
 phases:
   install:
     commands:
-      - aws cloudformation package --template-file cflambda.yaml.yaml --s3-bucket aws-ablum-photo --output-template-file outputtemplate.yml
+      - aws cloudformation package --template-file cflambda.yaml --s3-bucket aws-ablum-photo --output-template-file outputtemplate.yml
 artifacts:
   type: zip
   files:
