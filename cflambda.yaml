@@ -4,16 +4,16 @@ Description: An AWS Serverless Specification template describing your function.
 
 
 Resources:
-  indexphotos:
+  CFindexphotos:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: lambda_function.lambda_handler
       Runtime: python3.8
-      CodeUri: ./index-photos-3c15250a-e825-427e-92bc-c7e2f4294630.zip
+      CodeUri: ./index-photos-bb86af9d-0a8f-4dea-801c-d34c43d9a44d.zip
       Description: ''
       MemorySize: 128
       Timeout: 30
-      Role: 'arn:aws:iam::043550019784:role/service-role/index-photos-role-6djaxaiu'
+      Role: !GetAtt LambdaIamRoleindexphoto.Arn
       Events:
         BucketEvent1:
           Type: S3
@@ -22,31 +22,70 @@ Resources:
               Ref: Bucket1
             Events:
               - 's3:ObjectCreated:Put'
-      VpcConfig:
-        SecurityGroupIds:
-          - sg-cacb4cf4
-        SubnetIds:
-          - subnet-7349ff52
-          - subnet-c44bb4f5
+
   Bucket1:
     Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: CF-stack-ablum-photo
 
-  photosearchaws:
+  CFphotosearchaws:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: lambda_function.lambda_handler
       Runtime: python3.8
-      CodeUri: ./photo-search-aws-64ae9d40-4a30-44d4-a3b5-f641778a1856.zip
+      CodeUri: ./photo-search-aws-a406f215-43d7-4e34-a431-338a844fd545.zip
       Description: ''
       MemorySize: 128
       Timeout: 3
       Role: >-
         arn:aws:iam::043550019784:role/service-role/photo-search-aws-role-rpwshxpq
-      VpcConfig:
-        SecurityGroupIds:
-          - sg-cacb4cf4
-        SubnetIds:
-          - subnet-20943f46
+
+
+
+  LambdaIamRoleindexphoto:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service:
+                - 'lambda.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      Path: '/'
+      Policies:
+        - PolicyName: AmazonS3FullAccess
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 's3:*'
+                Resource: '*'
+
+        - PolicyName: AmazonRekognitionFullAccess
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "rekognition:*"
+                Resource: '*'
+        - PolicyName: AWSLambdaBasicExecutionRole
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "logs:CreateLogGroup"
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: '*'
 
   API:
     Type: AWS::ApiGateway::RestApi
@@ -75,7 +114,7 @@ Resources:
       Integration:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
-        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${photosearchaws.Arn}/invocations
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CFphotosearchaws.Arn}/invocations
       MethodResponses:
         - ResponseModels:
             application/json: Empty
@@ -119,10 +158,10 @@ Resources:
     Type: "AWS::Lambda::Permission"
     DependsOn:
       - API
-      - photosearchaws
+      - CFphotosearchaws
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Ref photosearchaws
+      FunctionName: !Ref CFphotosearchaws
       Principal: apigateway.amazonaws.com
 
 
